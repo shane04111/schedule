@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "discord": "^0.8.2",
+    "discord.js": "^14.11.0",
+    "openai": "^3.2.1"
+  },
+  "name": "timeost",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "^8.40.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    ".": "clear & node ./src/deploy-commands.js & node ./src/index.js",
+    "debug": "node ./src/deploy-commands.js & node ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
