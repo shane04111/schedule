@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-05-22 08:43:36
- * @LastEditTime: 2023-05-26 05:59:38
+ * @LastEditTime: 2023-05-26 07:14:20
  * @FilePath: \timepost\src\commands\schedule\schedule_list.js
  */
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
