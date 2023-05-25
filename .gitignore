@@ -1,1 +1,2 @@
-src/**/*.json
+src/config.json
+src/commands/schedule/schedule_date.json

@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-05-23 02:37:22
- * @LastEditTime: 2023-05-25 07:23:08
+ * @LastEditTime: 2023-05-26 05:11:47
  * @FilePath: \timepost\src\commands\practical\reload.js
  */
 const { SlashCommandBuilder } = require('discord.js');
@@ -25,6 +25,8 @@ module.exports = {
         const commandsPath = path.join(__dirname, '..', '..', 'commands');
         const focusedValue = interaction.options.getFocused();
         const choices = [];
+        // 下方程式請在自動載入不完全或沒顯示的時候啟用，並且將await wait後方括號中數字改為比代码运行时间還要長的時間
+        // console.time('代码运行时间');
         fs.readdir(commandsPath, (err, folders) => {
             if (err) {
                 console.error('無法讀取資料夾:', err);
@@ -48,7 +50,9 @@ module.exports = {
                 });
             });
         });
-        await wait(100);
+        // 下方程式請在自動載入不完全或沒顯示的時候啟用，並且將await wait後方括號中數字改為比代码运行时间還要長的時間
+        // console.timeEnd('代码运行时间');
+        await wait(2);
         const filtered = choices.filter(choice => choice.startsWith(focusedValue));
         await interaction.respond(
             filtered.map(choice => ({ name: choice, value: choice })),

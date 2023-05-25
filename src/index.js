@@ -1,11 +1,11 @@
 /*
  * @author: shane
  * @Date: 2023-04-11 06:25:58
- * @LastEditTime: 2023-05-25 08:26:34
+ * @LastEditTime: 2023-05-26 04:42:44
  * @FilePath: \timepost\src\index.js
  */
 
-const { Client, GatewayIntentBits, Collection, } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Guild, } = require('discord.js');
 const { token, notifyId, DebugMode } = require('./config.json');
 const CheckDebugMode = require(`./function/CheckDebugMode.js`);
 const fs = require('node:fs');
@@ -106,7 +106,7 @@ function GetJson() {
 
         choices_tag_get = u.choices_tag;
         choices_schedule_get = u.choices_schedule;
-        choices_file = u.choices_file
+        choices_file = u.choices_file;
 
         getData++;
 
@@ -147,10 +147,10 @@ function GetJson() {
             getDelete++;
             data.choices.splice(index, 1);
             // 將文件寫回去
-            fs.writeFileSync(__dirname + '/commands/schedule/schedule_date.json', JSON.stringify(data), 'utf8');
-            await wait(100);
+
         }
     });
+    fs.writeFileSync(__dirname + '/commands/schedule/schedule_date.json', JSON.stringify(data), 'utf8');
 }
 //====================================
 client.on('ready', async () => {
@@ -173,8 +173,10 @@ process.on('SIGINT', async () => {
         if (DebugMode === true) {
             console.log('\x1B[34m收到 Ctrl+C 信號，退出機器人進程\x1B[0m');
             await client.users.send(notifyId, '收到 Ctrl+C 信號，退出機器人進程');
+        } else {
+            console.log('\x1B[34m收到 Ctrl+C 信號，退出機器人進程\x1B[0m');
         }
-        process.exit();
+        await process.exit();
     } catch (err) {
         console.error(err);
         process.exit(1);
@@ -197,8 +199,8 @@ process.on('uncaughtException', (err) => {
     if (err.message.includes('token')) {
         console.error(`\x1B[31m未處理的異常：\x1B[0m${err}`, err);
     } else {
-        console.error(`未處理的異常：${err}`, err);
-        client.users.send(notifyId, `\x1B[31m未處理的異常：\x1B[0m${err}`);
+        console.error(`\x1B[31m未處理的異常：\x1B[0m${err}`, err);
+        client.users.send(notifyId, `未處理的異常：${err}`);
     }
 });
 

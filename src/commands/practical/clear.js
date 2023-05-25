@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-05-19 06:59:59
- * @LastEditTime: 2023-05-23 04:41:12
+ * @LastEditTime: 2023-05-25 21:44:02
  * @FilePath: \timepost\src\commands\practical\clear.js
  */
 const { SlashCommandBuilder } = require('discord.js');
@@ -67,8 +67,8 @@ module.exports = {
         // 批量删除14天内的消息
         if (messagesToDeleteWithin14Days.length > 0) {
             const channel = interaction.channel; // 替换为您的消息所在的频道
-            // const messageIdsToDelete = messagesToDeleteWithin14Days.map(msg => msg.id);
-            const messageIdsToDelete = messagesToDeleteWithin14Days.length;
+            const messageIdsToDelete = messagesToDeleteWithin14Days.map(msg => msg.id);
+            // const messageIdsToDelete = messagesToDeleteWithin14Days.length;
             CheckDebugMode(messageIdsToDelete);
             channel.bulkDelete(messageIdsToDelete)
                 .then(async deletedMessages => {

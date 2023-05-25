@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-05-22 08:43:36
- * @LastEditTime: 2023-05-23 20:59:44
+ * @LastEditTime: 2023-05-26 05:59:38
  * @FilePath: \timepost\src\commands\schedule\schedule_list.js
  */
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
@@ -9,6 +9,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const CheckDebugMode = require(`../../function/CheckDebugMode.js`);
 const convertToChineseTime = require(`../../function/convertToChineseTime.js`);
+const { log, time, timeEnd } = require('node:console');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -41,8 +42,8 @@ module.exports = {
         ),
     async execute(interaction) {
         let choices_year, choices_month, choices_day, choices_hour, choices_minute, choices_user_ID, choices_tag_get, choices_schedule_get, choices_channel_get, choices_channel_get_id, choices_channel, choices_user, getData, getDelete;
-        let Chose_Date_Index = [];
-        let Chose_Date = [];
+        const Chose_Date_Index = [];
+        const Chose_Date = [];
         const Option_Time = interaction.options.getBoolean('查詢時段提醒') ?? false;
         const Option_User = interaction.options.getUser('查詢使用者提醒') ?? null;
         const Option_Channel = interaction.options.getChannel('查詢頻道提醒') ?? null;
@@ -72,58 +73,96 @@ module.exports = {
 
             choices_tag_get = u.choices_tag;
             choices_schedule_get = u.choices_schedule;
+            choices_file = u.choices_file;
+            Get_guild_id = u.Guild_id;
 
             getData++;
 
-            if ((Option_Time === false || choices_hour === Option_Time) &&
-                (Option_User === null || choices_user_ID === Option_User.id) &&
+            if (interaction.guildId === Get_guild_id &&
+                (Option_Time === false || choices_hour === Option_Time) &&
+                ((Option_User === null && choices_user_ID === interaction.user.id) ||
+                    (Option_User !== null && choices_user_ID === Option_User.id)) &&
                 ((Option_Channel === null || (choices_channel_get_id === 'undefined' && choices_channel === Option_Channel.id)) ||
                     (choices_channel_get_id !== 'undefined' && choices_channel_get_id === Option_Channel.id)) &&
                 (Option_String === null || choices_schedule_get.includes(Option_String)) &&
                 (Option_Tag === null || choices_tag_get === Option_Tag.toString())) {
-                Chose_Date_Index.push(index);
+                Chose_Date.push(data.choices[index]);
             }
         });
-        CheckDebugMode(Chose_Date_Index);
-        for (let i = 0; i < Chose_Date_Index.length; i++) {
-            Chose_Date.push(data.choices[Chose_Date_Index[i]]);
-        }
+        CheckDebugMode(Chose_Date);
+        const Embed_index = parseInt(Chose_Date.length / 10) + 1;
         const schedule_Embed = new EmbedBuilder()
             .setColor(0x7FFFD4)
             .setTitle('已安排提醒')
             .setTimestamp()
-            .setDescription(`目前的提醒總數為 ${data.choices.length}，目前的查詢總數為 ${Chose_Date_Index.length}。`)
+            .setDescription(`目前的提醒總數為 ${data.choices.length}，目前的查詢總數為 ${Chose_Date.length}。`)
             .setFooter({ text: '查詢時間' });
 
-        if (Chose_Date.length !== 0) {
-            for (let i = 0; i < Chose_Date.length; i++) {
-                const paddedYear = Chose_Date[i].choices_year.toString().padStart(4, "0");
-                const paddedMonth = Chose_Date[i].choices_month.toString().padStart(2, "0");
-                const paddedDay = Chose_Date[i].choices_day.toString().padStart(2, "0");
-                const paddedHour = convertToChineseTime(parseInt(Chose_Date[i].choices_hour));
-                const paddedMinute = Chose_Date[i].choices_minute.toString().padStart(2, "0");
-                const Chose_Date_Time = paddedYear + '年' + paddedMonth + '月' + paddedDay + '日 ' + paddedHour + paddedMinute + '分';
-                CheckDebugMode(Chose_Date_Time);
+        try {
+            if (Chose_Date.length !== 0) {
+                if (Chose_Date.length > 10) {
+                    schedule_Embed.setDescription(
+                        `目前的提醒總數為 ${data.choices.length}，目前的查詢總數為 ${Chose_Date.length}。
+                當前查找頁數為 ，總頁數為${Embed_index}`
+                    );
+                }
+                for (let i = 0; i < Chose_Date.length; i++) {
+                    const paddedYear = Chose_Date[i].choices_year.toString().padStart(4, "0");
+                    const paddedMonth = Chose_Date[i].choices_month.toString().padStart(2, "0");
+                    const paddedDay = Chose_Date[i].choices_day.toString().padStart(2, "0");
+                    const paddedHour = convertToChineseTime(parseInt(Chose_Date[i].choices_hour));
+                    const paddedMinute = Chose_Date[i].choices_minute.toString().padStart(2, "0");
+                    const Chose_Date_Time = paddedYear + '年' + paddedMonth + '月' + paddedDay + '日 ' + paddedHour + paddedMinute + '分';
+                    CheckDebugMode(Chose_Date_Time);
+                    let get_Channel_Output;
+                    if (Chose_Date[i].choices_channel_options_Name === 'NA') {
+                        get_Channel_Output = Chose_Date[i].choices_channel;
+                    } else {
+                        get_Channel_Output = Chose_Date[i].choices_channel_options_ID;
+                    }
+                    if (Chose_Date.length <= 10) {
+                        schedule_Embed.addFields({
+                            name: `提醒${i + 1}`,
+                            value: `提醒使用者：<@${Chose_Date[i].choices_name_id}>
+                            提醒事項：${Chose_Date[i].choices_schedule}
+                            附加檔案：${Chose_Date[i].choices_file}
+                            是否有標記：${true_false_to_zn_tw(Chose_Date[i].choices_tag)}
+                            提醒時間：${Chose_Date_Time}
+                            提醒頻道：<#${get_Channel_Output}>`
+                        });
+                    } else {
+                        if (i <= 9) {
+                            schedule_Embed.addFields({
+                                name: `提醒${i + 1}`,
+                                value: `提醒使用者：<@${Chose_Date[i].choices_name_id}>
+                                提醒事項：${Chose_Date[i].choices_schedule}
+                                附加檔案：${Chose_Date[i].choices_file}
+                                是否有標記：${true_false_to_zn_tw(Chose_Date[i].choices_tag)}
+                                提醒時間：${Chose_Date_Time}
+                                提醒頻道：<#${get_Channel_Output}>`
+                            });
+                        }
+                    }
+                }
+            } else if (Chose_Date.length === 0 && data.choices.length !== 0) {
                 schedule_Embed.addFields({
-                    name: `提醒${i + 1}`,
-                    value: `提醒使用者：${Chose_Date[i].choices_name}
-                        提醒事項：${Chose_Date[i].choices_schedule}
-                        是否有標記：${true_false_to_zn_tw(Chose_Date[i].choices_tag)}
-                        提醒時間：${Chose_Date_Time}`
+                    name: `無相符的提醒`,
+                    value: `無法找到相關的提醒。`
                 });
+                schedule_Embed.setColor(0xADFF2F);
+            } else if (data.choices.length === 0) {
+                schedule_Embed.addFields({
+                    name: `無提醒`,
+                    value: `尚未設定任何提醒。`
+                });
+                schedule_Embed.setColor(0xFFA500);
             }
-        } else if (Chose_Date.length === 0 && data.choices.length !== 0) {
-            schedule_Embed.addFields({
-                name: `無相符的提醒`,
-                value: `無法找到相關的提醒。`
-            });
-            schedule_Embed.setColor(0xADFF2F);
-        } else if (data.choices.length === 0) {
-            schedule_Embed.addFields({
-                name: `無提醒`,
-                value: `尚未設定任何提醒。`
-            });
-            schedule_Embed.setColor(0xFFA500);
+        } catch (err) {
+            console.error('執行 尋找提醒時發生錯誤\n請檢察embed字數是否超過6000', err);
+            interaction.reply({
+                content: '指令執行發生錯誤',
+                ephemeral: true
+            })
         }
 
         CheckDebugMode(data.choices.length, Chose_Date.length);

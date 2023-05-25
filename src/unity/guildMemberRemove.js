@@ -1,25 +1,15 @@
 /*
  * @author: shane
  * @Date: 2023-05-24 03:08:56
- * @LastEditTime: 2023-05-24 06:39:45
+ * @LastEditTime: 2023-05-26 05:33:30
  * @FilePath: \timepost\src\unity\guildMemberRemove.js
+ * just a test
  */
-const { EmbedBuilder } = require('discord.js')
-const { LeftChannel } = require('../config.json')
+const CheckDebugMode = require(`../function/CheckDebugMode`)
 
 module.exports = {
     name: 'guildMemberRemove',
     async execute(member) {
-        const channel = member.guild.channels.cache.get(LeftChannel);
-        const embed = new EmbedBuilder()
-            .setColor("#ff8b33")
-            .setAuthor({ name: `退出伺服器通知` })
-            .setDescription(`<@${member.user.id}>退出了伺服器`)
-            .setTimestamp()
-            .setThumbnail(member.user.avatarURL())
-        channel.send({
-            // content: `<@${member.user.id}>已退出伺服器`,
-            embeds: [embed]
-        })
+        CheckDebugMode(member.user);
     }
 }
