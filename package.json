@@ -13,7 +13,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     ".": "clear & node ./src/deploy-commands.js & node ./src/index.js",
-    "debug": "node ./src/deploy-commands.js & node ./src/index.js"
+    "debug": "node ./src/deploy-commands.js & node ./src/index.js",
+    "git": "git add . & git commit -m '小更新' & git push release main"
   },
   "keywords": [],
   "author": "",
