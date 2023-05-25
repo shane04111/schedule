@@ -1,7 +1,7 @@
 <!--
  * @author: shane
  * @Date: 2023-05-26 07:43:01
- * @LastEditTime: 2023-05-26 07:43:46
+ * @LastEditTime: 2023-05-26 07:48:14
  * @FilePath: \timepost\README.md
 -->
 
@@ -21,3 +21,4 @@
 
 - 安裝：`npm i discord.js`
 - 使用：`npm run .`
+- 使用前請先更改 config.js 以及確保 schedule_date.json 有 choices 這個屬性
