@@ -20,5 +20,5 @@
 ## 設置
 
 - 安裝：`npm i discord.js`
-- 使用：`npm run .`
 - 使用前請先更改 config.js 以及確保 schedule_date.json 有 choices 這個屬性
+- 使用：`npm run .`
