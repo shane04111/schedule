@@ -1,8 +1,8 @@
 {
-  "token": "your token",
-  "clientId": "your clientId",
-  "guildId": "your guildId",
-  "notifyId": "your notifyId",
+  "token": "MTA5NTExMTc0NTMwOTI1MzY5NA.GYtI4X.5rAOLgXfPWAju-cn0hkYJFdcrvkoyT30vV8_7g",
+  "clientId": "1095111745309253694",
+  "guildId": "1079468798354133042",
+  "notifyId": "667012201017638913",
   "DebugMode": false,
-  "LeftChannel": "your LeftChannel"
+  "LeftChannel": "1110307797276569720"
 }

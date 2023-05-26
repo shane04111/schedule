@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-04-11 06:25:58
- * @LastEditTime: 2023-05-27 02:34:45
+ * @LastEditTime: 2023-05-27 02:43:43
  * @FilePath: \timepost\src\index.js
  */
 
@@ -177,7 +177,7 @@ client.on('ready', async () => {
     }, 1000)
 })
 //====================================
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
     if (message.content === '!guilds') {
         if (message.author.id === notifyId) {
             const guilds = client.guilds.cache;
@@ -189,7 +189,8 @@ client.on('messageCreate', message => {
                     guilds_message += guild.name;
                 }
             });
-            message.reply(`已收到您的訊息！\n${guilds_message}`);
+            message.reply(`已收到您的訊息！`);
+            await client.users.send(notifyId, `我在以下這些伺服器中：\n${guilds_message}`);
         } else {
             message.reply(`無權限！`);
         }
