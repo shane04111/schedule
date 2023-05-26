@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-04-13 14:17:15
- * @LastEditTime: 2023-05-26 06:32:42
+ * @LastEditTime: 2023-05-27 03:00:56
  * @FilePath: \timepost\src\deploy-commands.js
  */
 
@@ -53,8 +53,8 @@ const rest = new REST().setToken(token);
             Routes.applicationCommands(clientId),
             { body: commands }
         )
-        console.log(`成功重新載入 ${data.length} 個機器人公會 (/) 命令。`);
-        console.log(`成功重新載入 ${guild_data.length} 個機器人公共 (/) 命令。`)
+        console.log(`成功重新載入 ${data.length} 個機器人公共 (/) 命令。`);
+        console.log(`成功重新載入 ${guild_data.length} 個機器人公會 (/) 命令。`)
     } catch (error) {
         // And of course, make sure you catch and log any errors!
         console.error(error);
