@@ -14,7 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     ".": "clear & node ./src/deploy-commands.js & node ./src/index.js",
     "debug": "node ./src/deploy-commands.js & node ./src/index.js",
-    "git": "bash auto_update.sh"
+    "git": "git add . & git commit -m \"update\" & git push release main"
   },
   "keywords": [],
   "author": "",
