@@ -1,0 +1,8 @@
+{
+  "token": "your token",
+  "clientId": "your clientId",
+  "guildId": "your guildId",
+  "notifyId": "your notifyId",
+  "DebugMode": false,
+  "LeftChannel": "your LeftChannel"
+}
