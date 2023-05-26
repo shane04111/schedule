@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-05-24 05:22:31
- * @LastEditTime: 2023-05-24 07:05:12
+ * @LastEditTime: 2023-05-26 17:36:42
  * @FilePath: \timepost\src\events\InteractionCreate.js
  */
 const { Client, GatewayIntentBits, Events } = require('discord.js');

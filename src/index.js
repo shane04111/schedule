@@ -1,7 +1,7 @@
 /*
  * @author: shane
  * @Date: 2023-04-11 06:25:58
- * @LastEditTime: 2023-05-26 04:42:44
+ * @LastEditTime: 2023-05-26 21:13:29
  * @FilePath: \timepost\src\index.js
  */
 
@@ -12,11 +12,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const wait = require('node:timers/promises').setTimeout;
 const getCurrentTime = require(`./function/getCurrentTime.js`);
+const { log } = require('node:console');
 
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
     ]
 });
 //====================================
@@ -153,7 +156,13 @@ function GetJson() {
     fs.writeFileSync(__dirname + '/commands/schedule/schedule_date.json', JSON.stringify(data), 'utf8');
 }
 //====================================
+function guild_cache_get() {
+    const guilds = client.guilds.cache;
+    return guilds;
+}
+//====================================
 client.on('ready', async () => {
+    log('機器人目前在', guild_cache_get().size, '台伺服器中');
     setInterval(() => {
         if (getCurrentTime('Second') === 0) {
             GetJson();
@@ -167,6 +176,24 @@ client.on('ready', async () => {
         }
     }, 1000)
 })
+//====================================
+client.on('messageCreate', message => {
+    if (message.content === '!guilds') {
+        if (message.author.id === notifyId) {
+            message.reply('已收到您的訊息！');
+        } else {
+            message.reply(`無權限！`);
+        }
+    }
+});
+//====================================
+client.on('guildCreate', guild => {
+    console.log(`機器人加入了新的伺服器：\x1B[32m${guild.name}\x1B[0m\n機器人目前在 \x1B[33m${guild_cache_get().size}\x1B[0m 台伺服器中`);
+});
+//====================================
+client.on('guildDelete', guild => {
+    console.log(`機器人離開了伺服器：\x1B[32m${guild.name}\x1B[0m\n機器人目前在 \x1B[33m${guild_cache_get().size}\x1B[0m 台伺服器中`);
+});
 //====================================
 process.on('SIGINT', async () => {
     try {
@@ -203,5 +230,5 @@ process.on('uncaughtException', (err) => {
         client.users.send(notifyId, `未處理的異常：${err}`);
     }
 });
-
+//====================================
 client.login(token);
